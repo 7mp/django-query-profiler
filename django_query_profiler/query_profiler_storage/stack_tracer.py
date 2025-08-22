@@ -10,6 +10,8 @@ from typing import Dict, List, Tuple
 
 from . import StackTraceElement
 
+import executing
+
 '''
 These following are 2-D maps.  The first entry is for the app_module_names_to_exclude/django_module_names_to_include
 and the second key in the map is the moduleName.  True means that we should include it.  The reason for having a
@@ -64,7 +66,8 @@ def find_stack_trace(app_module_names_to_exclude: Tuple[str], django_module_name
                     stack_trace = StackTraceElement.app_stacktrace_element(
                         module_name=module_name,
                         function_name=function_name,
-                        line_number=_line_number_from_frame(current_frame))
+                        line_number=_line_number_from_frame(current_frame),
+                        file_name=_file_name_from_frame(current_frame))
                     app_stack_trace.append(stack_trace)
                 elif is_django_stack_trace:
                     stack_trace = StackTraceElement.django_stacktrace_element(
@@ -89,3 +92,8 @@ def _function_name_from_frame(frame):
 
 def _line_number_from_frame(frame):
     return frame.f_lineno
+
+
+def _function_name_from_frame(frame):
+    # In Python >= 3.11 we could just do `return frame.f_code.co_qualname`
+    return executing.Source.executing(frame).code_qualname()
