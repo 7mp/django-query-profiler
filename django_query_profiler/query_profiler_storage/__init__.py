@@ -26,6 +26,7 @@ class StackTraceElement:
     module_name: str
     function_name: str
     line_number: Optional[int] = None  # None happens for django stack-trace
+    file_name: Optional[str] = None  # None happens for django stack-trace
 
     def __str__(self):
         return f'{self.module_name.replace(".", "/")}.py#{self.line_number} {self.function_name}()'
@@ -39,8 +40,8 @@ class StackTraceElement:
         return StackTraceElement(module_name=module_name, function_name=function_name)
 
     @staticmethod
-    def app_stacktrace_element(module_name, function_name, line_number) -> 'StackTraceElement':
-        return StackTraceElement(module_name=module_name, function_name=function_name, line_number=line_number)
+    def app_stacktrace_element(module_name, function_name, line_number, file_name) -> 'StackTraceElement':
+        return StackTraceElement(module_name=module_name, function_name=function_name, line_number=line_number, file_name=file_name)
 
 
 class QuerySignatureAnalyzeResult(Enum):
