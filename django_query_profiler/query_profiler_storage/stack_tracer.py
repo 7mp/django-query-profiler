@@ -87,13 +87,14 @@ def _module_name_from_frame(frame):
 
 
 def _function_name_from_frame(frame):
-    return frame.f_code.co_name
+    # In Python >= 3.11 we could just do `return frame.f_code.co_qualname`
+    return executing.Source.executing(frame).code_qualname()
 
 
 def _line_number_from_frame(frame):
     return frame.f_lineno
 
 
-def _function_name_from_frame(frame):
-    # In Python >= 3.11 we could just do `return frame.f_code.co_qualname`
-    return executing.Source.executing(frame).code_qualname()
+def _file_name_from_frame(frame):
+    return frame.f_code.co_filename
+
